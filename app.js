@@ -1,4 +1,4 @@
-const https = require("https");
+/*const https = require("https");
 const fs = require("fs");
 const ws = require("ws");
 let app = https.createServer({
@@ -8,7 +8,12 @@ let app = https.createServer({
     // ダミーリクエスト処理
     res.writeHead(200);
     res.end("All glory to WebSockets!\n");
-}).listen(8082);
+}).listen(8080);
+let s = new ws.Server({ server: app });*/
+
+const http = require("http");
+const ws = require("ws");
+let app = http.createServer().listen(8080);
 let s = new ws.Server({ server: app });
 
 const ytdl = require("ytdl-core");

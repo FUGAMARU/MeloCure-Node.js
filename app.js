@@ -11,6 +11,7 @@ let app = https.createServer({
 }).listen(8080);
 let s = new ws.Server({ server: app });*/
 
+const fs = require("fs");
 const http = require("http");
 const ws = require("ws");
 let app = http.createServer().listen(8080);
@@ -59,11 +60,11 @@ s.on("connection", (ws) => {
                 console.log("==========Added a new content(" + date + ")==========");
                 console.log(received);
                 if (received.service == "youtube") {
-                    if (!(fs.existsSync(`/home/fugamaru/nginx/melocure.fugamaru.com/YouTube/${received.id}.mp3`))) {//サービスがYouTubeでmp3ファイルを準備する必要がある場合
+                    if (!(fs.existsSync(`/usr/src/YouTube/${received.id}.mp3`))) {//サービスがYouTubeでmp3ファイルを準備する必要がある場合
                         ytdl(`http://www.youtube.com/watch?v=${received.id}`, { filter: "audioonly", quality: "highestaudio" })
-                            .pipe(fs.createWriteStream(`/home/fugamaru/nginx/melocure.fugamaru.com/YouTube/${received.id}.mp4`))
+                            .pipe(fs.createWriteStream(`/usr/src/YouTube/${received.id}.mp4`))
                             .on('close', () => {
-                                exec(`ffmpeg -y -i /home/fugamaru/nginx/melocure.fugamaru.com/YouTube/${received.id}.mp4 /home/fugamaru/nginx/melocure.fugamaru.com/YouTube/${received.id}.mp3`, (error, stdout, stderr) => {
+                                exec(`ffmpeg -y -i /usr/src/YouTube/${received.id}.mp4 /usr/src/YouTube/${received.id}.mp3`, (error, stdout, stderr) => {
                                     if (error) {
                                         console.error(error);
                                         return;
@@ -77,7 +78,7 @@ s.on("connection", (ws) => {
                                     console.log("==========Current Queue State==========");
                                     console.log(queue[0]["queue"]);
                                     durations.push(received.duration);
-                                    fs.unlinkSync(`/home/fugamaru/nginx/melocure.fugamaru.com/YouTube/${received.id}.mp4`);
+                                    fs.unlinkSync(`/usr/src/YouTube/${received.id}.mp4`);
                                 });;
                             });
                     } else {//サービスがYouTubeで既にmp3ファイルの準備が整っていた場合(通常のWebSocketブロードキャスト)
